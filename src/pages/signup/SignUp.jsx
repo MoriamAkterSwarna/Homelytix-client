@@ -1,6 +1,7 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import {} from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useToasts } from "react-toast-notifications";
 
 const SignUp = () => {
   const {
@@ -8,9 +9,50 @@ const SignUp = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  console.log(errors);
-  const onSubmit = (data) => {
+  // console.log(errors);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const { addToast } = useToasts();
+  const onSubmit = async (data) => {
     console.log(data);
+    if (data.password === data.ConfirmPassword) {
+      const username = data.name;
+      const email = data.email;
+      const password = data.password;
+      console.log(username, email, password);
+      const newData = {
+        username,
+        email,
+        password,
+      };
+      setLoading(true);
+      const res = await fetch("http://localhost:3000/users", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(newData),
+      });
+      const dt = await res.json();
+      console.log(dt);
+      if (dt.insertedId) {
+        setLoading(false);
+        addToast("User Added Successfully!!", {
+          appearance: "success",
+          autoDismiss: true,
+        });
+        navigate("/");
+      } else {
+        setLoading(false);
+        console.log(loading);
+        setError(dt.message);
+        addToast(error, {
+          appearance: "error",
+          autoDismiss: true,
+        });
+      }
+    }
   };
   return (
     <div className="hero h-[80vh] lg:min-h-screen bg-opacity-90 relative glass-body">
@@ -18,10 +60,10 @@ const SignUp = () => {
         <div className="text-center  ">
           <h1 className="text-4xl font-bold text-gray-800 pt-6">Sign up</h1>
         </div>
-        <div className="card w-[90%] lg:w-[40%] shadow-2xl glass-card my-10 mx-auto p-6">
+        <div className="card w-[35%] shadow-2xl glass-card my-10 mx-auto p-6">
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="card-body mt-2 p-4">
+            className="card-body mt-2 py-4">
             <div className="form-control flex items-center justify-center">
               <input
                 type="text"
@@ -55,18 +97,19 @@ const SignUp = () => {
                 {...register("password", {
                   required: true,
                   minLength: 6,
-                  pattern: /(?=.*[A-Z])(?=.*[!@#$&*])/,
+                  // pattern: /(?=.*[A-Z])(?=.*[!@#$&*])/,
                 })}
+                name="password"
                 placeholder="password"
                 className="input input-bordered p-2 m-2 w-[90%] lg:w-2/3 rounded-sm bg-slate-200 text-gray-800 "
                 style={{ outline: "none" }}
               />
-              {errors.password?.type === "required" && (
+              {/* {errors.password?.type === "required" && (
                 <p className="text-red-500">Password is required</p>
               )}
               {errors.password?.type === "minLength" && (
                 <p className="text-red-500">Password must be 6 characters</p>
-              )}
+              )} */}
 
               {/* {errors.password?.type === "pattern" && (
                 <p className="text-red-500">
@@ -99,10 +142,10 @@ const SignUp = () => {
             </div>
           </form>
 
-          <p className="text-white mx-auto text-center">
+          <p className="text-white mx-auto text-center mb-8">
             <small>
               Already have an account?{" "}
-              <Link to="/signIn" className="text-rose-500">
+              <Link to="/signIn" className="text-gray-950">
                 Login
               </Link>
             </small>
