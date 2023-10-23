@@ -9,3 +9,23 @@
 .default {
   @apply font-medium tracking-wide text-gray-700 transition-colors duration-200 hover:text-pink-600 mr-2;
 }
+.glass-body {
+  background-image: url("./assets/villa-house-model-key-drawing-retro-desktop-real-estate-sale-concept.jpg");
+  background-position: center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+/* Glassmorphism card effect */
+.glass-card {
+  backdrop-filter: blur(12px) saturate(92%);
+  -webkit-backdrop-filter: blur(12px) saturate(92%);
+  background-color: rgba(81, 91, 108, 0.65);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.125);
+  /* background: rgba(255, 255, 255, 0.5);
+  box-shadow: 20px 20px 40px -6px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(4.5px);
+  -webkit-backdrop-filter: blur(4.5px);
+  border-radius: 10px; */
+}
