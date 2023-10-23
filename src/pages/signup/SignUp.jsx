@@ -10,7 +10,7 @@ const SignUp = () => {
     formState: { errors },
   } = useForm();
   // console.log(errors);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { addToast } = useToasts();
@@ -26,28 +26,30 @@ const SignUp = () => {
         email,
         password,
       };
-      setLoading(true);
+      // setLoading(true);
       const res = await fetch("http://localhost:3000/users", {
         method: "POST",
         headers: {
           "content-type": "application/json",
+          // "authorization": "token",
         },
         body: JSON.stringify(newData),
       });
       const dt = await res.json();
       console.log(dt);
       if (dt.insertedId) {
-        setLoading(false);
+        // setLoading(false);
         addToast("User Added Successfully!!", {
           appearance: "success",
           autoDismiss: true,
         });
-        navigate("/");
+        navigate("/signIn");
       } else {
-        setLoading(false);
-        console.log(loading);
+        // setLoading(false);
+        // console.log(loading);
+        console.log(error);
         setError(dt.message);
-        addToast(error, {
+        addToast("user not found", {
           appearance: "error",
           autoDismiss: true,
         });
