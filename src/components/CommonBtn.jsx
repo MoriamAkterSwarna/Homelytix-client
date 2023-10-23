@@ -1,6 +1,6 @@
 const CommonBtn = ({ buttonText }) => {
   return (
-    <div>
+    <>
       <a
         href="#_"
         className="relative inline-block px-4 py-2 font-medium group">
@@ -10,7 +10,7 @@ const CommonBtn = ({ buttonText }) => {
           {buttonText}
         </span>
       </a>
-    </div>
+    </>
   );
 };
 
