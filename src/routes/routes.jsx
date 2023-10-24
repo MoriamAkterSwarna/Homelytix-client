@@ -2,8 +2,10 @@ import { createBrowserRouter } from "react-router-dom";
 import Main from "../layout/Main";
 import About from "../pages/About";
 import Home from "../pages/Home";
+import Profile from "../pages/profile/Profile";
 import SignIn from "../pages/signin/SignIn";
 import SignUp from "../pages/signup/SignUp";
+import PrivateRoute from "./PrivateRoute";
 
 export const Router = createBrowserRouter([
   {
@@ -17,6 +19,15 @@ export const Router = createBrowserRouter([
       {
         path: "about",
         element: <About></About>,
+      },
+      {
+        index: true,
+        path: "profile",
+        element: (
+          <PrivateRoute>
+            <Profile></Profile>
+          </PrivateRoute>
+        ),
       },
     ],
   },

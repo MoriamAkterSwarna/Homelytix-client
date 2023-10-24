@@ -13,6 +13,7 @@
 - js cookie
 - react toast notifications
 - Firebase
+- react loader spinner
 
 # React + Vite
 

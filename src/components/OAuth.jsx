@@ -26,7 +26,9 @@ const OAuth = () => {
         body: JSON.stringify({
           username: result.user.displayName,
           email: result.user.email,
-          photo: result.user.photoURL,
+          avatar:
+            result.user.photoURL ||
+            "https://icons8.com/icon/492ILERveW8G/male-user",
         }),
       });
       const data = await res.json();
