@@ -1,8 +1,9 @@
+import Cookies from "js-cookie";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
-
 const SignIn = () => {
   const {
     register,
@@ -14,6 +15,8 @@ const SignIn = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { addToast } = useToasts();
+
+  const dispatch = useDispatch();
   const onSubmit = async (data) => {
     console.log(data);
 
@@ -25,18 +28,20 @@ const SignIn = () => {
       password,
     };
     // setLoading(true);
+    // dispatch(signInStart);
     const res = await fetch("http://localhost:3000/signin", {
       method: "POST",
       headers: {
         "content-type": "application/json",
-        // authorization: "token",
       },
       body: JSON.stringify(newData),
     });
     const dt = await res.json();
-
     console.log(dt);
-    if (dt.username) {
+    const { token, rest } = dt;
+    Cookies.set("access_token", token, { httpOnly: true });
+    // console.log(dt);
+    if (rest?.username) {
       // setLoading(false);
       addToast("User Login Successfully!!", {
         appearance: "success",
