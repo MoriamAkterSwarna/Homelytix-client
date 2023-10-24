@@ -1,3 +1,18 @@
+# Homelytix -- A Real full stack web application for Real Estate
+
+---
+
+## Technologies and Tools:
+
+- Redux
+- React
+- Express js
+- MongoDB
+- Tailwind
+- Redux persist
+- js cookie
+- react toast notifications
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
