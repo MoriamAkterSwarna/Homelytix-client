@@ -1,76 +1,101 @@
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { useToasts } from "react-toast-notifications";
-
+import { app } from "../firebase";
 export const UpdateProfileForm = () => {
   const {
     register,
-    handleSubmit,
+    // handleSubmit,
     formState: { errors },
   } = useForm();
-
+  const fileRef = useRef(null);
+  const [file, setFile] = useState(undefined);
+  const [filePerc, setFilePerc] = useState(0);
+  const [fileErr, setFileErr] = useState(false);
+  const [formData, setFormData] = useState({});
+  // console.log(file);
+  // console.log(filePerc);
+  // console.log(formData);
+  // console.log(fileErr);
   const { currentUser } = useSelector((state) => state.user);
-  const navigate = useNavigate();
-  const { addToast } = useToasts();
-  const onSubmit = async (data) => {
-    console.log(data);
 
-    const username = data.name;
-    const email = data.email;
-    const password = data.password;
-    console.log(username, email, password);
-    const newData = {
-      username,
-      email,
-      password,
-    };
-    // setLoading(true);
-    const res = await fetch("http://localhost:3000/users", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(newData),
-    });
-    const dt = await res.json();
-    console.log(dt);
-    if (dt.insertedId) {
-      // setLoading(false);
-      addToast("User Added Successfully!!", {
-        appearance: "success",
-        autoDismiss: true,
-      });
-      navigate("/signIn");
-    } else {
-      // setLoading(false);
-      // console.log(loading);
-      // console.log(error);
-      // setError(dt.message);
-      addToast("user not found", {
-        appearance: "error",
-        autoDismiss: true,
-      });
+  useEffect(() => {
+    if (file) {
+      handleFileUpload(file);
     }
+  }, [file]);
+  const handleFileUpload = (file) => {
+    const storage = getStorage(app);
+    const fileName = new Date().getTime() + file.name;
+    const storageRef = ref(storage, fileName);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        // console.log(progress);
+        // console.log("Upload is " + progress + "% done");
+        setFilePerc(Math.round(progress));
+      },
+      (error) => {
+        setFileErr(true);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          console.log("File available at", downloadURL);
+          // setFile(downloadURL);
+          setFormData({ ...formData, avatar: downloadURL });
+        });
+      }
+    );
   };
+
   return (
     <div className="hero bg-opacity-90 relative">
       <div className="hero-content flex-col">
         <div className="text-center  ">
-          <h1 className="text-4xl font-bold text-gray-800 pt-6">
+          <h1 className="text-3xl font-bold text-gray-800 pt-6">
             Update Profile
           </h1>
         </div>
         <div className="card w-[90%] lg:w-1/2 shadow-2xl glass-card my-4 mx-auto p-6">
           <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="card-body mt-2 py-4">
+            // onSubmit={handleSubmit(onSubmit)}
+            className="card-body mt-2 px-4">
             <div>
+              <input
+                onChange={(e) => setFile(e.target.files[0])}
+                type="file"
+                ref={fileRef}
+                hidden
+                accept="image/*"
+              />
               <img
-                className="mx-auto rounded-full cursor-pointer"
-                src={currentUser?.avatar}
+                onClick={() => fileRef.current.click()}
+                className="mx-auto w-12 h-12 rounded-full cursor-pointer"
+                src={formData?.avatar || currentUser?.avatar}
                 alt={currentUser?.username}
               />
+              <p className="text-center">
+                {fileErr ? (
+                  <span className="text-red-700">Error Image upload</span>
+                ) : filePerc > 0 && filePerc < 100 ? (
+                  <span className="text-slate-700">{`Uploading ${filePerc}%`}</span>
+                ) : filePerc === 100 ? (
+                  <span className="text-green-700">
+                    Image successfully uploaded!
+                  </span>
+                ) : (
+                  ""
+                )}
+              </p>
             </div>
             <div className="form-control flex items-center justify-center">
               <input
