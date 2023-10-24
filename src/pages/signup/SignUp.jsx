@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
+import OAuth from "../../components/OAuth";
 
 const SignUp = () => {
   const {
@@ -141,6 +142,7 @@ const SignUp = () => {
                 value="Sign Up"
               />
             </div>
+            <OAuth></OAuth>
           </form>
 
           <p className="text-white mx-auto text-center mb-8">

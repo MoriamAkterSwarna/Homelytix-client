@@ -8,6 +8,7 @@ import {
   signInStart,
   signInSuccess,
 } from "../../redux/user/userSlice";
+import OAuth from "../../components/OAuth";
 const SignIn = () => {
   const {
     register,
@@ -126,6 +127,7 @@ const SignIn = () => {
                 value="Sign In"
               />
             </div>
+            <OAuth></OAuth>
           </form>
 
           <p className="text-white mx-auto text-center mb-8">

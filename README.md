@@ -12,6 +12,7 @@
 - Redux persist
 - js cookie
 - react toast notifications
+- Firebase
 
 # React + Vite
 
