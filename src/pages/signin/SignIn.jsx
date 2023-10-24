@@ -1,9 +1,13 @@
 import Cookies from "js-cookie";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
+import {
+  signInFailure,
+  signInStart,
+  signInSuccess,
+} from "../../redux/user/userSlice";
 const SignIn = () => {
   const {
     register,
@@ -12,7 +16,9 @@ const SignIn = () => {
   } = useForm();
   // console.log(errors);
   // const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  // const [error, setError] = useState(null);
+  const { loading, error } = useSelector((state) => state.user);
+  console.log(loading);
   const navigate = useNavigate();
   const { addToast } = useToasts();
 
@@ -28,7 +34,7 @@ const SignIn = () => {
       password,
     };
     // setLoading(true);
-    // dispatch(signInStart);
+    dispatch(signInStart());
     const res = await fetch("http://localhost:3000/signin", {
       method: "POST",
       headers: {
@@ -47,12 +53,14 @@ const SignIn = () => {
         appearance: "success",
         autoDismiss: true,
       });
+      dispatch(signInSuccess(rest));
       navigate("/");
     } else {
       // setLoading(false);
       // console.log(loading);
       console.log(error);
-      setError(dt.message);
+      // setError(dt.message);
+      dispatch(signInFailure(dt.error));
       addToast("User not found", {
         appearance: "error",
         autoDismiss: true,
